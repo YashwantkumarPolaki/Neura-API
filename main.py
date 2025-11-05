@@ -6,8 +6,8 @@ app = FastAPI()
 
 API_KEY = os.getenv("NEURA_API_KEY", "neura-secret-key-123")
 
-# ✅ Define request model
-class CodeRequest(BaseModel):
+# ✅ Define the input model
+class CodeInput(BaseModel):
     language: str
     task: str
 
@@ -17,12 +17,12 @@ def home():
 
 @app.post("/generate-code")
 async def generate_code(
-    request: CodeRequest,
+    data: CodeInput,
     x_api_key: str = Header(None)
 ):
     if x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
     return {
-        "code": f"# Auto-generated code in {request.language}\n# Task: {request.task}\nprint('Hello from Neura!')"
+        "code": f"# Auto-generated code in {data.language}\n# Task: {data.task}\nprint('Hello from Neura!')"
     }
